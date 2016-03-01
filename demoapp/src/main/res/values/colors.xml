@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="colorPrimary">#737C8C</color>
+    <color name="colorPrimaryDark">#596171</color>
+    <color name="colorAccent">#D8A412</color>
+    <color name="colorTextBackground">#DD596171</color>
+    <color name="colorText">#DBE3F0</color>-->
+
+    <!--<color name="colorPrimary">#4D648D</color>
+    <color name="colorCell">#91A8D1</color>
+    <color name="colorPrimaryDark">#283655</color>
+    <color name="colorPrimaryDarkTransparent">#227A3E48</color>
+    <color name="colorAccent">#E18942</color>
+    <color name="colorBackground">#D0E1F9</color>
+    <color name="colorTextBackground">#DD283655</color>
+    <color name="colorText">#D0E1F9</color>-->
+
+    <color name="colorPrimary">#0E3758</color>
+    <color name="colorCell">#444444</color>
+    <color name="colorPrimaryDark">#0B2C47</color>
+    <color name="colorHeader">#0F3B5F</color>
+    <color name="colorText">#E7EBF0</color>
+    <color name="colorPrimaryDarkTransparent">#227A3E48</color>
+    <color name="colorAccent">#E18942</color>
+    <color name="colorBackground">#D0E1F9</color>
+    <color name="colorTextBackground">#DD283655</color>
+    <color name="colorShade1">#134D7C</color>
+    <color name="colorShade2">#16588D</color>
+    <color name="colorShade3">#19639F</color>
+    <color name="colorShade4">#1C6DB0</color>
+    <color name="colorShade5">#1E78C2</color>
+    <color name="colorShade6">#2183D4</color>
+</resources>
