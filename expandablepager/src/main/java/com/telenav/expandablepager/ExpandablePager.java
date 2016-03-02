@@ -1,6 +1,7 @@
-package telenav.com.expandablepager;
+package com.telenav.expandablepager;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,15 +16,15 @@ import android.widget.RelativeLayout;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import telenav.com.expandablepager.listeners.OnItemSelectedListener;
-import telenav.com.expandablepager.listeners.OnSliderStateChangeListener;
+import com.telenav.expandablepager.listeners.OnItemSelectedListener;
+import com.telenav.expandablepager.listeners.OnSliderStateChangeListener;
 
 /**
  * Created by Dmitri on 06/05/2015.
  */
 public class ExpandablePager extends SlidingContainer {
 
-    public static final byte MODE_REGULAR = 0, MODE_COMPACT = 1, MODE_FIXED = 2;
+    public static final byte MODE_REGULAR = 0, MODE_FIXED = 1;
     static final int INTERNAL_PAGE_ID = 12345;
 
     private ViewPager mPager;
@@ -36,116 +37,29 @@ public class ExpandablePager extends SlidingContainer {
 
     private int sliderState = STATE_COLLAPSED;
 
-    private byte sliderMode = MODE_COMPACT;
+    private byte sliderMode = MODE_REGULAR;
 
     private float historicY;
 
-
-    private int expandedHeight = 1800;
-
-    private int collapsedHeight;
-
-    private int clickToExpandId;
-
-    private View.OnClickListener listener;
+    private int collapsedHeight = (int) (80 * getResources().getDisplayMetrics().density);
 
     public ExpandablePager(Context context) {
         super(context);
+        init();
     }
 
     public ExpandablePager(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ExpandablePager, 0, 0);
+        setAnimationDuration(a.getInt(R.styleable.ExpandablePager_animation_duration, 200));
+        collapsedHeight = (int) a.getDimension(R.styleable.ExpandablePager_collapsed_height, 80 * getResources().getDisplayMetrics().density);
+        a.recycle();
     }
 
-    @SliderState
-    public int getSliderState() {
-        return sliderState;
-    }
-
-    /**
-     * Animates the container to the selected state.
-     *
-     * @param state - STATE_COLLAPSED, STATE_EXPANDED, STATE_HIDDEN
-     */
-    public void setSliderState(@SliderState int state) {
-        sliderState = state;
-        if (mPager.getAdapter().getCount() > 0)
-            animateToState(state);
-    }
-
-    public void setHeights(int expanded, int collapsed) {
-        expandedHeight = expanded;
-        collapsedHeight = collapsed;
-        sliderStateThreshold = expandedHeight / 2;
-    }
-
-    @Override
-    public ViewGroup.LayoutParams getLayoutParams() {
-        return super.getLayoutParams();
-    }
-
-    @SliderMode
-    public byte getSlideMode() {
-        return sliderMode;
-    }
-
-    /**
-     * 1 - full screen
-     * 0 - compact
-     *
-     * @param mode
-     */
-    private void setSliderMode(@SliderMode byte mode) {
-        switch (mode) {
-            case MODE_COMPACT: // default buttons
-                sliderMode = MODE_COMPACT;
-                getLayoutParams().height = expandedHeight;
-                setSlideValues((float) expandedHeight - collapsedHeight);
-                //sliderStateThreshold = cSlidePoint;
-                break;
-            case MODE_REGULAR: // full screen
-                sliderMode = MODE_REGULAR;
-                getLayoutParams().height = ViewPager.LayoutParams.MATCH_PARENT;
-                setSlideValues((float) ((ViewGroup) getParent()).getHeight());
-                //sliderStateThreshold = rSlidePoint;
-                break;
-            case MODE_FIXED:
-                sliderMode = MODE_FIXED;
-                getLayoutParams().height = expandedHeight;
-                setSlideValues((float) expandedHeight - collapsedHeight);
-                break;
-        }
-        enableSlide(mode != MODE_FIXED);
-    }
-
-    public void setClickToExpand(int id) {
-        listener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animateToState(STATE_EXPANDED);
-            }
-        };
-        clickToExpandId = id;
-    }
-
-    public void setCurrentItem(int index) {
-        mPager.setCurrentItem(index, false);
-    }
-
-    public void updateAdapter(ExpandablePagerAdapter adapter) {
-        int index = mPager.getCurrentItem();
-        setPagerAdapter(adapter);
-        mPager.setCurrentItem(Math.min(index, adapter.getCount() - 1));
-        if (onSliderStateChangeListener != null) {
-            onSliderStateChangeListener.onPageChanged(getPage(mPager.getCurrentItem()), sliderState);
-        }
-    }
-
-    public void init(ExpandablePagerAdapter adapter) {
+    private void init() {
         mPager = new ViewPager(getContext());
         mPager.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        addView(mPager);
-        setPagerAdapter(adapter);
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             boolean change = true;
 
@@ -170,12 +84,7 @@ public class ExpandablePager extends SlidingContainer {
                 change = true;
             }
         });
-        if (expandedHeight > 0) {
-            setSliderMode(sliderMode);
-            setTranslationY(expandedHeight - collapsedHeight);
-            setVisibility(View.VISIBLE);
-            setState(sliderState);
-        }
+        addView(mPager);
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -191,9 +100,71 @@ public class ExpandablePager extends SlidingContainer {
         });
     }
 
-    private void setPagerAdapter(ExpandablePagerAdapter adapter) {
-        adapter.setClickToExpandId(listener, clickToExpandId);
+    @SliderState
+    public int getSliderState() {
+        return sliderState;
+    }
+
+    /**
+     * Animates the container to the selected state.
+     *
+     * @param state - STATE_COLLAPSED, STATE_EXPANDED, STATE_HIDDEN
+     */
+    public void setSliderState(@SliderState int state) {
+        sliderState = state;
+        if (mPager.getAdapter().getCount() > 0)
+            animateToState(state);
+    }
+
+    public void setCollapsedHeight(int collapsed) {
+        collapsedHeight = collapsed;
+    }
+
+    @SliderMode
+    public byte getMode() {
+        return sliderMode;
+    }
+
+    public void setMode(@SliderMode byte mode) {
+        sliderMode = mode;
+        if (mode == MODE_FIXED)
+            setSliderMode(MODE_FIXED);
+    }
+
+    private void setSliderMode(@SliderMode byte mode) {
+        switch (mode) {
+            case MODE_REGULAR: // full screen
+                int height = getHeight();
+                sliderStateThreshold = height / 2;
+                sliderMode = MODE_REGULAR;
+                setSlideValues((float) height - collapsedHeight);
+                break;
+            case MODE_FIXED:
+                sliderStateThreshold = Integer.MAX_VALUE;
+                sliderMode = MODE_FIXED;
+                getLayoutParams().height = collapsedHeight;
+                setSlideValues(0f);
+                break;
+        }
+        enableSlide(mode != MODE_FIXED);
+    }
+
+    public void setCurrentItem(int index) {
+        mPager.setCurrentItem(index, false);
+    }
+
+    public void setAdapter(ExpandablePagerAdapter adapter) {
+        int index = mPager.getCurrentItem();
         mPager.setAdapter(adapter);
+        mPager.setCurrentItem(Math.min(index, adapter.getCount() - 1));
+        mPager.post(new Runnable() {
+            @Override
+            public void run() {
+                if (onSliderStateChangeListener != null) {
+                    onSliderStateChangeListener.onPageChanged(getPage(mPager.getCurrentItem()), sliderState);
+                }
+            }
+        });
     }
 
     public void setOnSliderStateChangeListener(OnSliderStateChangeListener onSliderStateChangeListener) {
@@ -238,12 +209,14 @@ public class ExpandablePager extends SlidingContainer {
     }
 
     @Override
-    public Parcelable onSaveInstanceState() {
+    protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         SavedState ss = new SavedState(superState);
 
         ss.sliderState = sliderState;
         ss.sliderMode = sliderMode;
+        if (mPager != null)
+            ss.currentIndex = mPager.getCurrentItem();
 
         return ss;
     }
@@ -262,11 +235,14 @@ public class ExpandablePager extends SlidingContainer {
                 historicY = h;
                 break;
         }
+        if (sliderMode == MODE_REGULAR) {
+            setSliderMode(sliderMode);
+        }
         setState(sliderState);
     }
 
     @Override
-    public void onRestoreInstanceState(Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state) {
         if (!(state instanceof SavedState)) {
             super.onRestoreInstanceState(state);
             return;
@@ -277,11 +253,13 @@ public class ExpandablePager extends SlidingContainer {
 
         sliderState = ss.sliderState;
         sliderMode = ss.sliderMode;
+        if (mPager != null)
+            mPager.setCurrentItem(ss.currentIndex);
     }
 
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({MODE_REGULAR, MODE_COMPACT, MODE_FIXED})
+    @IntDef({MODE_REGULAR, MODE_FIXED})
     public @interface SliderMode {
     }
 
@@ -296,6 +274,7 @@ public class ExpandablePager extends SlidingContainer {
                         return new SavedState[size];
                     }
                 };
+        int currentIndex;
         int sliderState;
         byte sliderMode;
 
@@ -305,6 +284,7 @@ public class ExpandablePager extends SlidingContainer {
 
         private SavedState(Parcel in) {
             super(in);
+            this.currentIndex = in.readInt();
             this.sliderState = in.readInt();
             this.sliderMode = in.readByte();
         }
@@ -312,6 +292,7 @@ public class ExpandablePager extends SlidingContainer {
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
+            out.writeInt(this.currentIndex);
             out.writeInt(this.sliderState);
             out.writeByte(this.sliderMode);
         }

@@ -1,4 +1,4 @@
-package telenav.com.demoapp;
+package com.telenav.demoapp;
 
 import android.animation.ValueAnimator;
 import android.content.res.Configuration;
@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -20,18 +19,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import telenav.com.expandablepager.ExpandablePager;
-import telenav.com.expandableviewpager.R;
-import telenav.com.expandablepager.listeners.OnSliderStateChangeListener;
+import com.telenav.expandablepager.ExpandablePager;
+import com.telenav.expandablepager.listeners.OnSliderStateChangeListener;
+import com.telenav.expandableviewpager.R;
 
 public class MainActivity extends AppCompatActivity {
 
     int duration = 200;
     boolean two = false;
     private List<Book> list2 = Arrays.asList(
-            new Book("Crime and Punishment").setAuthor("Fyodor Dostoyevsky").setUrl("https://upload.wikimedia.org/wikipedia/en/4/4b/Crimeandpunishmentcover.png").setDescription("Crime and Punishment (Russian: Преступлéние и наказáние, tr. Prestupleniye i nakazaniye; IPA: [prʲɪstʊˈplʲenʲɪɪ ɪ nəkɐˈzanʲɪɪ]) is a novel by the Russian author Fyodor Dostoyevsky. It was first published in the literary journal The Russian Messenger in twelve monthly installments during 1866. It was later published in a single volume. It is the second of Dostoyevsky's full-length novels following his return from 10 years of exile in Siberia. Crime and Punishment is considered the first great novel of his \"mature\" period of writing."),
-            new Book("The Brothers Karamazov").setAuthor("Fyodor Dostoyevsky").setUrl("https://upload.wikimedia.org/wikipedia/commons/2/2d/Dostoevsky-Brothers_Karamazov.jpg").setDescription("The Brothers Karamazov (Russian: Бра́тья Карама́зовы, Brat'ya Karamazovy, pronounced [ˈbratʲjə kərɐˈmazəvɨ]), also translated as The Karamazov Brothers, is the final novel by the Russian author Fyodor Dostoyevsky. Dostoyevsky spent nearly two years writing The Brothers Karamazov, which was published as a serial in The Russian Messenger and completed in November 1880. The author died less than four months after its publication."),
-            new Book("Demons").setAuthor("Fyodor Dostoyevsky").setUrl("https://upload.wikimedia.org/wikipedia/en/6/6d/Demons_%28Fyodor_Dostoyevsky%29.jpg").setDescription("Demons (Russian: Бесы, Bésy) is an anti-nihilistic novel by Fyodor Dostoyevsky, first published in the journal The Russian Messenger in 1871-2. It is the third of the four great novels written by Dostoyevsky after his return from Siberian exile, the others being Crime and Punishment (1866), The Idiot (1869) and The Brothers Karamazov (1880). Demons is a social and political satire, a psychological drama, and large scale tragedy. Joyce Carol Oates has described it as \"Dostoevsky's most confused and violent novel, and his most satisfyingly 'tragic' work.\"")
+            new Book("Crime and Punishment").setAuthor("Fyodor Dostoyevsky").setUrl("http://ecx.images-amazon.com/images/I/51M%2BDuxvjmL._SX311_BO1,204,203,200_.jpg").setDescription("Crime and Punishment (Russian: Преступлéние и наказáние, tr. Prestupleniye i nakazaniye; IPA: [prʲɪstʊˈplʲenʲɪɪ ɪ nəkɐˈzanʲɪɪ]) is a novel by the Russian author Fyodor Dostoyevsky. It was first published in the literary journal The Russian Messenger in twelve monthly installments during 1866. It was later published in a single volume. It is the second of Dostoyevsky's full-length novels following his return from 10 years of exile in Siberia. Crime and Punishment is considered the first great novel of his \"mature\" period of writing."),
+            new Book("The Brothers Karamazov").setAuthor("Fyodor Dostoyevsky").setUrl("http://ecx.images-amazon.com/images/I/51FIyYKsCXL._SX333_BO1,204,203,200_.jpg").setDescription("The Brothers Karamazov (Russian: Бра́тья Карама́зовы, Brat'ya Karamazovy, pronounced [ˈbratʲjə kərɐˈmazəvɨ]), also translated as The Karamazov Brothers, is the final novel by the Russian author Fyodor Dostoyevsky. Dostoyevsky spent nearly two years writing The Brothers Karamazov, which was published as a serial in The Russian Messenger and completed in November 1880. The author died less than four months after its publication."),
+            new Book("Demons").setAuthor("Fyodor Dostoyevsky").setUrl("http://ecx.images-amazon.com/images/I/41Q-p2N1neL._SX326_BO1,204,203,200_.jpg").setDescription("Demons (Russian: Бесы, Bésy) is an anti-nihilistic novel by Fyodor Dostoyevsky, first published in the journal The Russian Messenger in 1871-2. It is the third of the four great novels written by Dostoyevsky after his return from Siberian exile, the others being Crime and Punishment (1866), The Idiot (1869) and The Brothers Karamazov (1880). Demons is a social and political satire, a psychological drama, and large scale tragedy. Joyce Carol Oates has described it as \"Dostoevsky's most confused and violent novel, and his most satisfyingly 'tragic' work.\"")
     );
     private List<Book> list = Arrays.asList(
             new Book("Crime and Punishment").setAuthor("Fyodor Dostoyevsky").setUrl("http://ecx.images-amazon.com/images/I/51M%2BDuxvjmL._SX311_BO1,204,203,200_.jpg").setDescription("Crime and Punishment (Russian: Преступлéние и наказáние, tr. Prestupleniye i nakazaniye; IPA: [prʲɪstʊˈplʲenʲɪɪ ɪ nəkɐˈzanʲɪɪ]) is a novel by the Russian author Fyodor Dostoyevsky. It was first published in the literary journal The Russian Messenger in twelve monthly installments during 1866. It was later published in a single volume. It is the second of Dostoyevsky's full-length novels following his return from 10 years of exile in Siberia. Crime and Punishment is considered the first great novel of his \"mature\" period of writing."),
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             new Book("To Kill a Mockingbird").setAuthor("Harper Lee").setUrl("http://ecx.images-amazon.com/images/I/51grMGCKivL._SX307_BO1,204,203,200_.jpg").setDescription("To Kill a Mockingbird is a novel by Harper Lee published in 1960. It was immediately successful, winning the Pulitzer Prize, and has become a classic of modern American literature. The plot and characters are loosely based on the author's observations of her family and neighbors, as well as on an event that occurred near her hometown in 1936, when she was 10 years old."),
             new Book("Fahrenheit 451").setAuthor("Ray Bradbury").setUrl("http://ecx.images-amazon.com/images/I/41Cx8mY2UNL._SX324_BO1,204,203,200_.jpg").setDescription("Fahrenheit 451 is a dystopian novel by Ray Bradbury published in 1953. It is regarded as one of his best works. The novel presents a future American society where books are outlawed and \"firemen\" burn any that are found. The title refers to the temperature that Bradbury asserted to be the autoignition temperature of paper. (In reality, scientists place the autoignition temperature of paper anywhere from high 440 degrees Fahrenheit to some 30 degrees hotter, depending on the study and type of paper.)")
     );
-    private ExpandablePager p;
+    private ExpandablePager pager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +56,15 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        p = (ExpandablePager) findViewById(R.id.container);
-        p.setAnimationDuration(duration);
-        p.setClickToExpand(R.id.image);
-        p.setOnSliderStateChangeListener(new OnSliderStateChangeListener() {
+        final List<Book> myList = new ArrayList<>(list);
+        final MyAdapter adapter = new MyAdapter(myList);
+
+        pager = (ExpandablePager) findViewById(R.id.container);
+        //pager.setAnimationDuration(duration);
+        //pager.setCollapsedHeight((int) getResources().getDimension(R.dimen.header_height));
+        //pager.setMode(ExpandablePager.MODE_REGULAR);
+        pager.setAdapter(adapter);
+        pager.setOnSliderStateChangeListener(new OnSliderStateChangeListener() {
 
             @Override
             public void onStateChanged(View page, int state) {
@@ -72,15 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 toggleContent(page, state, 0);
             }
         });
-        final List<Book> myList = new ArrayList<>(list);
-        final MyAdapter adapter = new MyAdapter(myList);
-        p.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                p.setHeights(((ViewGroup) p.getParent()).getHeight(), (int) getResources().getDimension(R.dimen.header_height));
-                p.init(adapter);
-            }
-        }, 50);
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.book_list);
         mRecyclerView.setHasFixedSize(true);
@@ -95,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
         a.setListener(new OnItemClickedListener() {
             @Override
             public void onItemClicked(int index) {
-                p.setCurrentItem(index);
-                p.animateToState(ExpandablePager.STATE_EXPANDED);
+                pager.setCurrentItem(index);
+                pager.animateToState(ExpandablePager.STATE_EXPANDED);
             }
         });
 
@@ -114,12 +109,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.shbutton:
-                p.setSliderState(p.getSliderState() == ExpandablePager.STATE_HIDDEN ? ExpandablePager.STATE_COLLAPSED : ExpandablePager.STATE_HIDDEN);
+                pager.setSliderState(pager.getSliderState() == ExpandablePager.STATE_HIDDEN ? ExpandablePager.STATE_COLLAPSED : ExpandablePager.STATE_HIDDEN);
                 return true;
 
             case R.id.ccbutton:
-                p.setHeights(((ViewGroup) p.getParent()).getHeight(), (int) getResources().getDimension(R.dimen.header_height));
-                p.updateAdapter(new MyAdapter((two = !two) ? list2 : list));
+                pager.setAdapter(new MyAdapter((two = !two) ? list2 : list));
                 return true;
 
             default:
@@ -159,18 +153,4 @@ public class MainActivity extends AppCompatActivity {
     private boolean isLandscape() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
-
-    /*@Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            p.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }*/
 }

@@ -1,4 +1,4 @@
-package telenav.com.expandablepager.listeners;
+package com.telenav.expandablepager.listeners;
 
 
 /**

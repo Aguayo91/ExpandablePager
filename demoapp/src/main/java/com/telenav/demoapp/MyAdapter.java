@@ -1,4 +1,4 @@
-package telenav.com.demoapp;
+package com.telenav.demoapp;
 
 import android.net.Uri;
 import android.text.Spannable;
@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import telenav.com.expandablepager.ExpandablePagerAdapter;
-import telenav.com.expandableviewpager.R;
+import com.telenav.expandablepager.ExpandablePagerAdapter;
+import com.telenav.expandableviewpager.R;
 
 /**
  * Created by dima on 25/02/16.
@@ -46,9 +46,7 @@ public class MyAdapter extends ExpandablePagerAdapter<Book> {
         TextView comments = ((TextView) rootView.findViewById(R.id.page_comments));
         setSpan(comments, "\\d+,*\\d+");
 
-        container.addView(rootView);
-        register(rootView, position);
-        return rootView;
+        return attach(container, rootView, position);
     }
 
     private void setSpan(TextView textView, String pattern) {

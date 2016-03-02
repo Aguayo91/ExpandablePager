@@ -1,4 +1,4 @@
-package telenav.com.expandablepager;
+package com.telenav.expandablepager;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import telenav.com.expandablepager.listeners.OnSlideListener;
+import com.telenav.expandablepager.listeners.OnSlideListener;
 
 /**
  * Created by Dmitri on 10/11/2014.

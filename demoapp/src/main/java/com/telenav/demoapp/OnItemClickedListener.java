@@ -1,4 +1,4 @@
-package telenav.com.demoapp;
+package com.telenav.demoapp;
 
 /**
  * Created by Dmitri on 05/05/2015.

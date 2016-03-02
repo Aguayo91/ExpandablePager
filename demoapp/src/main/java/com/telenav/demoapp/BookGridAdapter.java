@@ -1,4 +1,4 @@
-package telenav.com.demoapp;
+package com.telenav.demoapp;
 
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +12,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-import telenav.com.expandableviewpager.R;
+import com.telenav.expandableviewpager.R;
 
 /**
  * Created by dima on 26/02/16.
