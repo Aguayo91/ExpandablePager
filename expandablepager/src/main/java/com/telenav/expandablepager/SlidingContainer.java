@@ -27,19 +27,31 @@ import java.util.TreeSet;
 import com.telenav.expandablepager.listeners.OnSlideListener;
 
 /**
- * Created by Dmitri on 10/11/2014.
+ * Container that slides vertically between provided slide values.
  */
 public class SlidingContainer extends RelativeLayout {
 
     public static final int STATE_COLLAPSED = 0, STATE_EXPANDED = 1, STATE_HIDDEN = -1;
     private static final int SLIDE_THRESHOLD_DIPS = 20;
     private final float DEFAULT_SLIDE_THRESHOLD;
+    /**
+     * Each slide event must pass this threshold in order not to be ignored.
+     */
     private float slideThreshold;
     private int viewHeight;
-    private List<Float> slideValues = new ArrayList<>();
-    private int slideValueIndex = 0;
+    /**
+     * The container will stop sliding when it reaches one of the stopValues.
+     */
+    private List<Float> stopValues = new ArrayList<>();
+    private int stopValueIndex = 0;
     private float startYCoordinate;
+    /**
+     * Difference between start touch Y coordinate and current Y coordinate.
+     */
     private float touchDelta;
+    /**
+     * Current translationY value
+     */
     private float translated = 0;
     private OnSlideListener slideListener;
     private int duration = 200;
@@ -69,7 +81,7 @@ public class SlidingContainer extends RelativeLayout {
         super.onSizeChanged(w, h, oldw, oldh);
         if (viewHeight == 0) {
             viewHeight = h;
-            Iterator<Float> iter = slideValues.iterator();
+            Iterator<Float> iter = stopValues.iterator();
             while (iter.hasNext()) {
                 Float i = iter.next();
                 if (i >= viewHeight || i < 0)
@@ -80,12 +92,12 @@ public class SlidingContainer extends RelativeLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        return !resize(event);
+        return !translate(event);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        resize(event);
+        translate(event);
         return true;
     }
 
@@ -93,9 +105,9 @@ public class SlidingContainer extends RelativeLayout {
         slideThreshold = enable ? DEFAULT_SLIDE_THRESHOLD : Integer.MAX_VALUE;
     }
 
-    private boolean resize(MotionEvent ev) {
+    private boolean translate(MotionEvent ev) {
         final int action = MotionEventCompat.getActionMasked(ev);
-        int stepSize = slideValues.size();
+        int stepSize = stopValues.size();
 
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
@@ -108,14 +120,14 @@ public class SlidingContainer extends RelativeLayout {
                 if (Math.abs(touchDelta) > slideThreshold) {
                     float startingPointY, nextPointY, maxDiff, tempDelta, auxDelta = 0;
                     tempDelta = touchDelta + (touchDelta < 0 ? 1 : -1) * slideThreshold;
-                    startingPointY = slideValues.get(slideValueIndex);
-                    if (!isUpwardGesture() && slideValueIndex >= 1) {
-                        nextPointY = slideValues.get(slideValueIndex - 1);
-                        maxDiff = nextPointY - slideValues.get(slideValueIndex);
+                    startingPointY = stopValues.get(stopValueIndex);
+                    if (!isUpwardGesture() && stopValueIndex >= 1) {
+                        nextPointY = stopValues.get(stopValueIndex - 1);
+                        maxDiff = nextPointY - stopValues.get(stopValueIndex);
                         auxDelta = Math.min(-tempDelta, maxDiff);
-                    } else if (isUpwardGesture() && slideValueIndex < stepSize - 1) {
-                        nextPointY = slideValues.get(slideValueIndex + 1);
-                        maxDiff = nextPointY - slideValues.get(slideValueIndex);
+                    } else if (isUpwardGesture() && stopValueIndex < stepSize - 1) {
+                        nextPointY = stopValues.get(stopValueIndex + 1);
+                        maxDiff = nextPointY - stopValues.get(stopValueIndex);
                         auxDelta = Math.max(-tempDelta, maxDiff);
                     }
                     float preTranslated = translated;
@@ -129,14 +141,14 @@ public class SlidingContainer extends RelativeLayout {
             }
             case MotionEvent.ACTION_UP: {
                 if (Math.abs(touchDelta) > slideThreshold) {
-                    if (!isUpwardGesture() && slideValueIndex > 0)
-                        slideValueIndex--;
-                    else if (isUpwardGesture() && slideValueIndex < stepSize - 1)
-                        slideValueIndex++;
-                    if (!slideValues.contains(translated)) {
-                        animate(slideValues.get(slideValueIndex));
+                    if (!isUpwardGesture() && stopValueIndex > 0)
+                        stopValueIndex--;
+                    else if (isUpwardGesture() && stopValueIndex < stepSize - 1)
+                        stopValueIndex++;
+                    if (!stopValues.contains(translated)) {
+                        animate(stopValues.get(stopValueIndex));
                     } else
-                        onSettled(slideValueIndex);
+                        onSettled(stopValueIndex);
                     startYCoordinate = -1;
                     touchDelta = 0;
                 }
@@ -155,18 +167,36 @@ public class SlidingContainer extends RelativeLayout {
     protected void onSettled(int slideValueIndex) {
     }
 
+    /**
+     * indicates that that the finger moved up
+     */
     private boolean isUpwardGesture() {
         return touchDelta > 0;
     }
 
+    /**
+     * Convenience method, uses FastOutSlowInInterpolator and default animation duration. See {@link SlidingContainer#animate(float, int, Interpolator)}
+     * @param amount translationY amount
+     */
     private void animate(float amount) {
         animate(amount, duration, new LinearInterpolator());
     }
 
+    /**
+     * Convenience method, uses FastOutSlowInInterpolator. See {@link SlidingContainer#animate(float, int, Interpolator)}
+     * @param amount translationY amount
+     * @param duration animation duration
+     */
     private void animate(float amount, int duration) {
         animate(amount, duration, new FastOutSlowInInterpolator());
     }
 
+    /**
+     * Animate translationY to the next stopValue
+     * @param amount translationY amount
+     * @param duration animation duration
+     * @param interpolator  animation interpolator
+     */
     private void animate(final float amount, int duration, Interpolator interpolator) {
         ObjectAnimator oa = ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, amount)
                 .setDuration(duration);
@@ -180,47 +210,46 @@ public class SlidingContainer extends RelativeLayout {
         oa.addListener(new CustomAnimationListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
-                onSettled(slideValueIndex);
+                onSettled(stopValueIndex);
             }
         });
         oa.start();
     }
 
-    public List<Float> getSlideValues() {
-        return slideValues;
+    public List<Float> getStopValues() {
+        return stopValues;
     }
 
     /**
-     * Stops sliding at the specified values. Slide value is subtracted from slider height
-     *
-     * @param slideValues
+     * Stops sliding at the specified values.
+     * @param stopValues list of stop values
      */
-    public void setSlideValues(Float... slideValues) {
+    public void setStopValues(Float... stopValues) {
         SortedSet<Float> s = new TreeSet<>(Collections.reverseOrder());
-        s.addAll(Arrays.asList(slideValues));
-        this.slideValues.clear();
-        this.slideValues.addAll(s);
-        this.slideValues.add(0f);
-        slideValueIndex = 0;
+        s.addAll(Arrays.asList(stopValues));
+        this.stopValues.clear();
+        this.stopValues.addAll(s);
+        this.stopValues.add(0f);
+        stopValueIndex = 0;
     }
 
-    public Float getCurrentSlideValue() {
-        return slideValues.get(slideValueIndex);
+    public Float getCurrentStopValue() {
+        return stopValues.get(stopValueIndex);
     }
 
     /**
-     * Sets the container position according to the provided state. The change is immediate.
+     * Sets the container position to a given state. No animation occurs. For an animated alternative see {@link SlidingContainer#animateToState(int, int)}
      */
     public boolean setState(@SliderState int state) {
-        if (!slideValues.isEmpty())
+        if (!stopValues.isEmpty())
             switch (state) {
                 case STATE_COLLAPSED:
-                    setTranslationY(slideValues.get(0));
-                    slideValueIndex = 0;
+                    setTranslationY(stopValues.get(0));
+                    stopValueIndex = 0;
                     return true;
                 case STATE_EXPANDED:
                     setTranslationY(0);
-                    slideValueIndex = slideValues.size() - 1;
+                    stopValueIndex = stopValues.size() - 1;
                     return true;
                 case STATE_HIDDEN:
                     setTranslationY(getHeight());
@@ -229,23 +258,26 @@ public class SlidingContainer extends RelativeLayout {
         return false;
     }
 
+    /**
+     * Convenience method, uses default duration. See {@link SlidingContainer#animateToState(int, int)}
+     */
     public boolean animateToState(@SliderState int toState) {
         return animateToState(toState, duration);
     }
 
     /**
-     * Animates the container to the selected state.
+     * Animate the container position to a given state. For a non-animated alternative see {@link SlidingContainer#setState(int)}
      */
     public boolean animateToState(@SliderState int toState, int duration) {
-        if (!slideValues.isEmpty()) {
+        if (!stopValues.isEmpty()) {
             switch (toState) {
                 case STATE_COLLAPSED:
-                    animate(slideValues.get(0), duration);
-                    slideValueIndex = 0;
+                    animate(stopValues.get(0), duration);
+                    stopValueIndex = 0;
                     return true;
                 case STATE_EXPANDED:
                     animate(0, duration);
-                    slideValueIndex = slideValues.size() - 1;
+                    stopValueIndex = stopValues.size() - 1;
                     return true;
                 case STATE_HIDDEN:
                     animate(getHeight(), duration);
@@ -261,15 +293,13 @@ public class SlidingContainer extends RelativeLayout {
         }
     }
 
-    public
-    @SliderState
-    int getState() {
+    public @SliderState int getState() {
         int translation = (int) getTranslationY();
         if (translation == 0)
             return STATE_EXPANDED;
         else if (translation == viewHeight)
             return STATE_HIDDEN;
-        else if (slideValues.size() >= 2 && translation == slideValues.get(slideValues.size() - 2))
+        else if (stopValues.size() >= 2 && translation == stopValues.get(stopValues.size() - 2))
             return STATE_COLLAPSED;
         return STATE_COLLAPSED;//check this later
     }

@@ -3,8 +3,13 @@ package com.telenav.expandablepager.listeners;
 import java.util.List;
 
 /**
- * Created by Dmitri on 05/05/2015.
+ * Listener for ViewPager page selected events
  */
 public interface OnItemSelectedListener {
-    void onItemSelected(List<?> itemsInList, int index);
+    /**
+     * Fires each time a page from the ViewPages is selected
+     * @param items list of adapter items
+     * @param index index of the selected item
+     */
+    void onItemSelected(List<?> items, int index);
 }

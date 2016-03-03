@@ -18,9 +18,6 @@ import java.util.regex.Pattern;
 import com.telenav.expandablepager.ExpandablePagerAdapter;
 import com.telenav.expandableviewpager.R;
 
-/**
- * Created by dima on 25/02/16.
- */
 public class MyAdapter extends ExpandablePagerAdapter<Book> {
     public MyAdapter(List<Book> items) {
         super(items);

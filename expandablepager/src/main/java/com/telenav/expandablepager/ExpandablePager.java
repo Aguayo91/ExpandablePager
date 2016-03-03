@@ -20,7 +20,7 @@ import com.telenav.expandablepager.listeners.OnItemSelectedListener;
 import com.telenav.expandablepager.listeners.OnSliderStateChangeListener;
 
 /**
- * Created by Dmitri on 06/05/2015.
+ * Layout that contains a ViewPager and can slide vertically between 2 states (expanded and collapsed)
  */
 public class ExpandablePager extends SlidingContainer {
 
@@ -107,8 +107,7 @@ public class ExpandablePager extends SlidingContainer {
 
     /**
      * Animates the container to the selected state.
-     *
-     * @param state - STATE_COLLAPSED, STATE_EXPANDED, STATE_HIDDEN
+     * @param state - available value are: STATE_COLLAPSED, STATE_EXPANDED, STATE_HIDDEN
      */
     public void setSliderState(@SliderState int state) {
         sliderState = state;
@@ -116,15 +115,24 @@ public class ExpandablePager extends SlidingContainer {
             animateToState(state);
     }
 
+    /**
+     * Set the height of the pager in the collapsed state.
+     * @param collapsed collapsed height in pixels
+     */
     public void setCollapsedHeight(int collapsed) {
         collapsedHeight = collapsed;
     }
 
-    @SliderMode
-    public byte getMode() {
+    /**
+     * @return current slider mode
+     */
+    @SliderMode public byte getMode() {
         return sliderMode;
     }
 
+    /**
+     * Set slider mode
+     */
     public void setMode(@SliderMode byte mode) {
         sliderMode = mode;
         if (mode == MODE_FIXED)
@@ -137,13 +145,13 @@ public class ExpandablePager extends SlidingContainer {
                 int height = getHeight();
                 sliderStateThreshold = height / 2;
                 sliderMode = MODE_REGULAR;
-                setSlideValues((float) height - collapsedHeight);
+                setStopValues((float) height - collapsedHeight);
                 break;
             case MODE_FIXED:
                 sliderStateThreshold = Integer.MAX_VALUE;
                 sliderMode = MODE_FIXED;
                 getLayoutParams().height = collapsedHeight;
-                setSlideValues(0f);
+                setStopValues(0f);
                 break;
         }
         enableSlide(mode != MODE_FIXED);
@@ -169,6 +177,10 @@ public class ExpandablePager extends SlidingContainer {
 
     public void setOnSliderStateChangeListener(OnSliderStateChangeListener onSliderStateChangeListener) {
         this.onSliderStateChangeListener = onSliderStateChangeListener;
+    }
+
+    public void setOnItemSelectedListener(OnItemSelectedListener listener) {
+        onItemSelectedListener = listener;
     }
 
     private View getPage(int position) {
@@ -197,15 +209,6 @@ public class ExpandablePager extends SlidingContainer {
 
     @Override
     protected void onSettled(int slideValueIndex) {
-    }
-
-    public void setCurrentPage(int page) {
-        if (page < mPager.getAdapter().getCount())
-            mPager.setCurrentItem(page);
-    }
-
-    public void setOnItemSelectedListener(OnItemSelectedListener listener) {
-        onItemSelectedListener = listener;
     }
 
     @Override

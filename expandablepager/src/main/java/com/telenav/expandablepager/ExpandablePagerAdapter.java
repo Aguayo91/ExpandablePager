@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 /**
- * POI details page adapter
- * Created by Dmitri on 08/05/2015.
+ * Adapter for ExpandablePager. Extend this class and pass it to your pager via {@link ExpandablePager#setAdapter(ExpandablePagerAdapter)}
  */
 public class ExpandablePagerAdapter<T> extends PagerAdapter {
 
@@ -33,6 +32,13 @@ public class ExpandablePagerAdapter<T> extends PagerAdapter {
         return view == object;
     }
 
+    /**
+     * Attaches the view to the container and gives it a specific id. Return the result of this method when overriding {@link #instantiateItem(ViewGroup, int)}
+     * @param container view container
+     * @param v inflated view
+     * @param position position of the view in the adapter
+     * @return inflated view
+     */
     protected View attach(ViewGroup container, View v, int position) {
         v.setId(ExpandablePager.INTERNAL_PAGE_ID + position);
         container.addView(v);

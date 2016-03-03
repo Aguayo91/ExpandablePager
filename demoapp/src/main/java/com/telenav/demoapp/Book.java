@@ -1,8 +1,5 @@
 package com.telenav.demoapp;
 
-/**
- * Created by dima on 25/02/16.
- */
 public class Book {
     private String title;
     private String author;

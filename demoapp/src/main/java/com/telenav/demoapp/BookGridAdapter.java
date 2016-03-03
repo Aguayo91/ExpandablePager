@@ -14,22 +14,16 @@ import java.util.List;
 
 import com.telenav.expandableviewpager.R;
 
-/**
- * Created by dima on 26/02/16.
- */
 public class BookGridAdapter extends RecyclerView.Adapter<BookGridAdapter.ViewHolder> {
     private OnItemClickedListener listener;
     private List<Book> mDataset;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         public TextView title;
         public TextView subtitle;
         public SimpleDraweeView image;
         public ViewGroup container;
+
         public ViewHolder(RelativeLayout v) {
             super(v);
             container = v;
@@ -39,27 +33,20 @@ public class BookGridAdapter extends RecyclerView.Adapter<BookGridAdapter.ViewHo
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public BookGridAdapter(List<Book> myDataset) {
-        mDataset = myDataset;
+    public BookGridAdapter(List<Book> dataset) {
+        mDataset = dataset;
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public BookGridAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
-        // create a new view
         RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.cell, parent, false);
-        // set the view's size, margins, paddings and layout parameters
         return new ViewHolder(v);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
         holder.title.setText(mDataset.get(position).getTitle());
         holder.subtitle.setText(mDataset.get(position).getAuthor());
         Uri uri = Uri.parse(mDataset.get(position).getUrl());
@@ -74,7 +61,6 @@ public class BookGridAdapter extends RecyclerView.Adapter<BookGridAdapter.ViewHo
 
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();
