@@ -64,3 +64,16 @@ or programmatically
 ```java 
     pager.setMode(ExpandablePager.MODE_REGULAR);
 ```
+#Extras
+Change pager state (supported states are STATE_COLLAPSED, STATE_EXPANDED, and STATE_HIDDEN) 
+```java  
+    pager.setState(ExpandablePager.STATE_COLLAPSED)
+```
+Animate pager state change
+```java  
+    pager.animateToState(ExpandablePager.STATE_COLLAPSED)
+```
+Set current item
+```java  
+    pager.setCurrentItem(index, false);
+```
