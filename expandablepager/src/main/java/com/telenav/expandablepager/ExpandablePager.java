@@ -8,19 +8,22 @@ import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 import com.telenav.expandablepager.listeners.OnItemSelectedListener;
 import com.telenav.expandablepager.listeners.OnSliderStateChangeListener;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
- * Layout that contains a ViewPager and can slide vertically between 2 states (expanded and collapsed)
+ * Layout that contains a ViewPager and can slide vertically between 2 states (expanded and collapsed). Should be aligned to the bottom of the screen.
  */
 public class ExpandablePager extends SlidingContainer {
 
@@ -88,6 +91,7 @@ public class ExpandablePager extends SlidingContainer {
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                pinToBottom();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -98,6 +102,22 @@ public class ExpandablePager extends SlidingContainer {
                 }
             }
         });
+    }
+
+    /**
+     * Move the layout to the bottom of the screen in case it was not moved in the xml file
+     */
+    private void pinToBottom() {
+        ViewGroup.LayoutParams params = getLayoutParams();
+        if (params != null) {
+            if (params instanceof RelativeLayout.LayoutParams) {
+                ((LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            } else if (params instanceof LinearLayout.LayoutParams) {
+                ((LinearLayout.LayoutParams) params).gravity = Gravity.BOTTOM;
+            } else if (params instanceof FrameLayout.LayoutParams) {
+                ((FrameLayout.LayoutParams) params).gravity = Gravity.BOTTOM;
+            }
+        }
     }
 
     @SliderState
@@ -126,7 +146,8 @@ public class ExpandablePager extends SlidingContainer {
     /**
      * @return current slider mode
      */
-    @SliderMode public byte getMode() {
+    @SliderMode
+    public byte getMode() {
         return sliderMode;
     }
 
