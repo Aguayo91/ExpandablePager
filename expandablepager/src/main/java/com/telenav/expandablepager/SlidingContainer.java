@@ -101,7 +101,7 @@ public class SlidingContainer extends RelativeLayout {
         return true;
     }
 
-    public void enableSlide(boolean enable) {
+    protected void enableSlide(boolean enable) {
         slideThreshold = enable ? DEFAULT_SLIDE_THRESHOLD : Integer.MAX_VALUE;
     }
 

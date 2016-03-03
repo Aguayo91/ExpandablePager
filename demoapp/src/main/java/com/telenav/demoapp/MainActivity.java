@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         a.setListener(new OnItemClickedListener() {
             @Override
             public void onItemClicked(int index) {
-                pager.setCurrentItem(index);
+                pager.setCurrentItem(index, false);
                 pager.animateToState(ExpandablePager.STATE_EXPANDED);
             }
         });
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.shbutton:
-                pager.setSliderState(pager.getSliderState() == ExpandablePager.STATE_HIDDEN ? ExpandablePager.STATE_COLLAPSED : ExpandablePager.STATE_HIDDEN);
+                pager.animateToState(pager.getSliderState() == ExpandablePager.STATE_HIDDEN ? ExpandablePager.STATE_COLLAPSED : ExpandablePager.STATE_HIDDEN);
                 return true;
 
             case R.id.ccbutton:

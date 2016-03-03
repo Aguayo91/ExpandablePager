@@ -129,10 +129,10 @@ public class ExpandablePager extends SlidingContainer {
      * Animates the container to the selected state.
      * @param state - available value are: STATE_COLLAPSED, STATE_EXPANDED, STATE_HIDDEN
      */
-    public void setSliderState(@SliderState int state) {
+    @Override
+    public boolean animateToState(@SliderState int state) {
         sliderState = state;
-        if (mPager.getAdapter().getCount() > 0)
-            animateToState(state);
+        return mPager.getAdapter().getCount() > 0 && super.animateToState(state);
     }
 
     /**
@@ -178,8 +178,8 @@ public class ExpandablePager extends SlidingContainer {
         enableSlide(mode != MODE_FIXED);
     }
 
-    public void setCurrentItem(int index) {
-        mPager.setCurrentItem(index, false);
+    public void setCurrentItem(int index, boolean smoothScroll) {
+        mPager.setCurrentItem(index, smoothScroll);
     }
 
     public void setAdapter(ExpandablePagerAdapter adapter) {
