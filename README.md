@@ -1,12 +1,16 @@
+[ ![Download](https://api.bintray.com/packages/dimatim/maven/ExpandablePager/images/download.svg) ](https://bintray.com/dimatim/maven/ExpandablePager/_latestVersion)
+
 # ExpandablePager
 Layout that contains a ViewPager and can slide vertically between 2 states (expanded and collapsed).
 
 ![alt tag](https://github.com/Telenav/ExpandablePager/blob/master/gif/expandablepager.gif?token=AMYIVqqzN85dOdOY4DOfk2wC-i8R7RxNks5W1HArwA%3D%3D "Demo")
+#Requirements
+Android 4.0+ (Ice Cream Sandwich and later)
 #Setup
 ###Step 1
 Add the following line to the ```dependencies``` section of your ```build.gradle``` file
 ```gradle
-//todo
+compile 'com.telenav.expandablepager:expandablepager:0.1.0'
 ```
 ###Step 2
 Extend ExpandablePagerAdapter class and override ```instantiateItem```
