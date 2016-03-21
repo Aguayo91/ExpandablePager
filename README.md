@@ -10,7 +10,7 @@ Android 4.0+ (Ice Cream Sandwich and later)
 ###Step 1
 Add the following line to the ```dependencies``` section of your ```build.gradle``` file
 ```gradle
-compile 'com.telenav.expandablepager:expandablepager:0.1.0'
+compile 'com.telenav.expandablepager:expandablepager:0.2.0'
 ```
 ###Step 2
 Extend ExpandablePagerAdapter class and override ```instantiateItem```
