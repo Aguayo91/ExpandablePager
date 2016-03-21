@@ -1,4 +1,5 @@
 [ ![Download](https://api.bintray.com/packages/dimatim/maven/ExpandablePager/images/download.svg) ](https://bintray.com/dimatim/maven/ExpandablePager/_latestVersion)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-ExpandablePager-blue.svg?style=flat)](http://android-arsenal.com/details/1/3278)
 
 # ExpandablePager
 Layout that contains a ViewPager and can slide vertically between 2 states (expanded and collapsed).
@@ -13,7 +14,8 @@ Add the following line to the ```dependencies``` section of your ```build.gradle
 compile 'com.telenav.expandablepager:expandablepager:0.2.0'
 ```
 ###Step 2
-Extend ExpandablePagerAdapter class and override ```instantiateItem```
+Extend desired adapter:
+- ExpandablePagerAdapter (don't forget to override `instantiateItem`)
 ```java
 public class MyAdapter extends ExpandablePagerAdapter<Book> {
     
@@ -29,6 +31,9 @@ public class MyAdapter extends ExpandablePagerAdapter<Book> {
     }
 }
 ```
+- ExpandableFragmentPagerAdapter
+- ExpandableFragmentStatePagerAdapter
+
 ###Step 3
 Add ExpandablePager to a layout
 ```xml
@@ -86,12 +91,12 @@ Set listeners
     pager.setOnSliderStateChangeListener(new OnSliderStateChangeListener() {
 
         @Override
-        public void onStateChanged(View page, int state) {
+        public void onStateChanged(View page, int index, int state) {
             ...
         }
 
         @Override
-        public void onPageChanged(View page, int state) {
+        public void onPageChanged(View page, int index, int state) {
             ...
         }
     });
