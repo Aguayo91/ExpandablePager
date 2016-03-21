@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.telenav.demoapp.fragment.BookFragmentAdapter;
+import com.telenav.demoapp.fragment.BookFragmentStateAdapter;
 import com.telenav.expandablepager.ExpandablePager;
-import com.telenav.expandablepager.listeners.OnSliderStateChangeListener;
+import com.telenav.expandablepager.listener.OnSliderStateChangeListener;
 import com.telenav.expandableviewpager.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -57,7 +59,13 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         final List<Book> myList = new ArrayList<>(list);
-        final MyAdapter adapter = new MyAdapter(myList);
+
+        //use PageAdapter
+        final BookAdapter adapter = new BookAdapter(myList);
+        //or FragmentAdapter
+        //final BookFragmentAdapter adapter = new BookFragmentAdapter(getSupportFragmentManager(), myList);
+        //or FragmentStateAdapter
+        //final BookFragmentStateAdapter adapter = new BookFragmentStateAdapter(getSupportFragmentManager(), myList);
 
         pager = (ExpandablePager) findViewById(R.id.container);
         //pager.setAnimationDuration(duration);
@@ -67,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
         pager.setOnSliderStateChangeListener(new OnSliderStateChangeListener() {
 
             @Override
-            public void onStateChanged(View page, int state) {
+            public void onStateChanged(View page, int index, int state) {
                 toggleContent(page, state, duration);
             }
 
             @Override
-            public void onPageChanged(View page, int state) {
+            public void onPageChanged(View page, int index, int state) {
                 toggleContent(page, state, 0);
             }
         });
@@ -113,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.ccbutton:
-                pager.setAdapter(new MyAdapter((two = !two) ? list2 : list));
+                pager.setAdapter(new BookAdapter((two = !two) ? list2 : list));
                 return true;
 
             default:

@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.telenav.expandablepager.ExpandablePagerAdapter;
+import com.telenav.expandablepager.adapter.ExpandablePagerAdapter;
 import com.telenav.expandableviewpager.R;
 
-public class MyAdapter extends ExpandablePagerAdapter<Book> {
-    public MyAdapter(List<Book> items) {
+public class BookAdapter extends ExpandablePagerAdapter<Book> {
+    public BookAdapter(List<Book> items) {
         super(items);
     }
 
