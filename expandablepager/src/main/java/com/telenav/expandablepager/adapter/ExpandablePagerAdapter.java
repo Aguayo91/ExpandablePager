@@ -10,16 +10,19 @@
  * the specific language governing permissions and limitations under the License.
  */
 
-package com.telenav.expandablepager;
+package com.telenav.expandablepager.adapter;
 
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.telenav.expandablepager.ExpandablePager;
+import com.telenav.expandablepager.R;
+
 import java.util.List;
 
 /**
- * Adapter for ExpandablePager. Extend this class and pass it to your pager via {@link ExpandablePager#setAdapter(ExpandablePagerAdapter)}
+ * PagerAdapter for ExpandablePager. Extend this class and pass it to your pager via {@link ExpandablePager#setAdapter(PagerAdapter)}
  */
 public class ExpandablePagerAdapter<T> extends PagerAdapter {
 
@@ -44,6 +47,10 @@ public class ExpandablePagerAdapter<T> extends PagerAdapter {
         return view == object;
     }
 
+    public List<T> getDataItems() {
+        return items;
+    }
+
     /**
      * Attaches the view to the container and gives it a specific id. Return the result of this method when overriding {@link #instantiateItem(ViewGroup, int)}
      * @param container view container
@@ -52,7 +59,7 @@ public class ExpandablePagerAdapter<T> extends PagerAdapter {
      * @return inflated view
      */
     protected View attach(ViewGroup container, View v, int position) {
-        v.setId(ExpandablePager.INTERNAL_PAGE_ID + position);
+        v.setId(R.id.internal_page_id % 10000 + position);
         container.addView(v);
         return v;
     }

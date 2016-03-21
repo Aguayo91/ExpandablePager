@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.telenav.expandablepager.listeners.OnSlideListener;
+import com.telenav.expandablepager.listener.OnSlideListener;
 
 /**
  * Container that slides vertically between provided slide values.

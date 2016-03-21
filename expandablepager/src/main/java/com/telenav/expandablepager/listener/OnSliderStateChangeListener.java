@@ -10,7 +10,7 @@
  * the specific language governing permissions and limitations under the License.
  */
 
-package com.telenav.expandablepager.listeners;
+package com.telenav.expandablepager.listener;
 
 import android.view.View;
 
@@ -22,15 +22,19 @@ import com.telenav.expandablepager.SlidingContainer;
 public interface OnSliderStateChangeListener {
     /**
      * Fires when slider state changes as a result of a slide. Ex: change from expanded state to collapsed state.
-     * @param page view linked with the page whose state being changed
+     *
+     * @param page  view linked with the page whose state being changed
+     * @param index page index
      * @param state new slider state
      */
-    void onStateChanged(View page,@SlidingContainer.SliderState int state);
+    void onStateChanged(View page, int index, @SlidingContainer.SliderState int state);
 
     /**
      * Fires when the state changes for a page different from the current page (most often the next page offscreen) or when the view size changes
-     * @param page view linked with the page whose state being changed
+     *
+     * @param page  view linked with the page whose state being changed
+     * @param index page index
      * @param state new slider state
      */
-    void onPageChanged(View page,@SlidingContainer.SliderState int state);
+    void onPageChanged(View page, int index, @SlidingContainer.SliderState int state);
 }

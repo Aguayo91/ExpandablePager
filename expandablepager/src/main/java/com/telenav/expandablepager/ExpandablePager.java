@@ -18,6 +18,11 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -28,8 +33,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.telenav.expandablepager.listeners.OnItemSelectedListener;
-import com.telenav.expandablepager.listeners.OnSliderStateChangeListener;
+import com.telenav.expandablepager.adapter.ExpandablePagerAdapter;
+import com.telenav.expandablepager.listener.OnItemSelectedListener;
+import com.telenav.expandablepager.listener.OnSliderStateChangeListener;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -40,7 +46,6 @@ import java.lang.annotation.RetentionPolicy;
 public class ExpandablePager extends SlidingContainer {
 
     public static final byte MODE_REGULAR = 0, MODE_FIXED = 1;
-    static final int INTERNAL_PAGE_ID = 12345;
 
     private ViewPager mPager;
 
@@ -74,6 +79,7 @@ public class ExpandablePager extends SlidingContainer {
 
     private void init() {
         mPager = new ViewPager(getContext());
+        mPager.setId(R.id.internal_pager_id);
         mPager.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             boolean change = true;
@@ -82,7 +88,8 @@ public class ExpandablePager extends SlidingContainer {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (change) {
                     if (onSliderStateChangeListener != null) {
-                        onSliderStateChangeListener.onPageChanged(getPage(mPager.getCurrentItem() + (position < mPager.getCurrentItem() ? -1 : 1)), sliderState);
+                        int index = mPager.getCurrentItem() + (position < mPager.getCurrentItem() ? -1 : 1);
+                        onSliderStateChangeListener.onPageChanged(getPage(index), index, sliderState);
                         change = !change;
                     }
                 }
@@ -91,7 +98,7 @@ public class ExpandablePager extends SlidingContainer {
             @Override
             public void onPageSelected(int position) {
                 if (onItemSelectedListener != null)
-                    onItemSelectedListener.onItemSelected(((ExpandablePagerAdapter) mPager.getAdapter()).items, position);
+                    onItemSelectedListener.onItemSelected(((ExpandablePagerAdapter) mPager.getAdapter()).getDataItems(), position);
             }
 
             @Override
@@ -111,7 +118,8 @@ public class ExpandablePager extends SlidingContainer {
                     getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
                 if (onSliderStateChangeListener != null) {
-                    onSliderStateChangeListener.onPageChanged(getPage(mPager.getCurrentItem()), sliderState);
+                    int index = mPager.getCurrentItem();
+                    onSliderStateChangeListener.onPageChanged(getPage(index), index, sliderState);
                 }
             }
         });
@@ -191,11 +199,21 @@ public class ExpandablePager extends SlidingContainer {
         enableSlide(mode != MODE_FIXED);
     }
 
+    /**
+     * Set the currently selected page.
+     *
+     * @param index Item index to select
+     * @param smoothScroll True to smoothly scroll to the new item, false to transition immediately
+     */
     public void setCurrentItem(int index, boolean smoothScroll) {
         mPager.setCurrentItem(index, smoothScroll);
     }
 
-    public void setAdapter(ExpandablePagerAdapter adapter) {
+    public int getCurrentItem() {
+        return mPager.getCurrentItem();
+    }
+
+    public void setAdapter(PagerAdapter adapter) {
         int index = mPager.getCurrentItem();
         mPager.setAdapter(adapter);
         mPager.setCurrentItem(Math.min(index, adapter.getCount() - 1));
@@ -203,7 +221,8 @@ public class ExpandablePager extends SlidingContainer {
             @Override
             public void run() {
                 if (onSliderStateChangeListener != null) {
-                    onSliderStateChangeListener.onPageChanged(getPage(mPager.getCurrentItem()), sliderState);
+                    int index = mPager.getCurrentItem();
+                    onSliderStateChangeListener.onPageChanged(getPage(index), index, sliderState);
                 }
             }
         });
@@ -218,7 +237,13 @@ public class ExpandablePager extends SlidingContainer {
     }
 
     private View getPage(int position) {
-        return findViewById(INTERNAL_PAGE_ID + position);
+        System.out.println("");
+        if (mPager.getAdapter() instanceof FragmentPagerAdapter)
+            return ((FragmentActivity) getContext()).getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.internal_pager_id + ":" + position).getView();
+        else if (mPager.getAdapter() instanceof FragmentStatePagerAdapter)
+            return ((Fragment) mPager.getAdapter().instantiateItem(mPager, position)).getView();
+        else
+            return findViewById(R.id.internal_page_id % 10000 + position);
     }
 
     @Override
@@ -229,13 +254,15 @@ public class ExpandablePager extends SlidingContainer {
             if (sliderState != STATE_HIDDEN)
                 sliderState = STATE_COLLAPSED;
             if (onSliderStateChangeListener != null) {
-                onSliderStateChangeListener.onStateChanged(getPage(mPager.getCurrentItem()), sliderState);
+                int index = mPager.getCurrentItem();
+                onSliderStateChangeListener.onStateChanged(getPage(index), index, sliderState);
             }
         } else if (historicY >= sliderStateThreshold && yPosition < sliderStateThreshold) {
             //up
             sliderState = STATE_EXPANDED;
             if (onSliderStateChangeListener != null) {
-                onSliderStateChangeListener.onStateChanged(getPage(mPager.getCurrentItem()), sliderState);
+                int index = mPager.getCurrentItem();
+                onSliderStateChangeListener.onStateChanged(getPage(index), index, sliderState);
             }
         }
         historicY = yPosition;
