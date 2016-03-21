@@ -237,7 +237,6 @@ public class ExpandablePager extends SlidingContainer {
     }
 
     private View getPage(int position) {
-        System.out.println("");
         if (mPager.getAdapter() instanceof FragmentPagerAdapter)
             return ((FragmentActivity) getContext()).getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.internal_pager_id + ":" + position).getView();
         else if (mPager.getAdapter() instanceof FragmentStatePagerAdapter)
