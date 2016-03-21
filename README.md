@@ -81,3 +81,31 @@ Set current item
 ```java  
     pager.setCurrentItem(index, false);
 ```
+Set listeners
+```java
+    pager.setOnSliderStateChangeListener(new OnSliderStateChangeListener() {
+
+        @Override
+        public void onStateChanged(View page, int state) {
+            ...
+        }
+
+        @Override
+        public void onPageChanged(View page, int state) {
+            ...
+        }
+    });
+    
+    pager.setOnItemSelectedListener(new OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(List<?> items, int index) {
+            ...
+        }
+    });
+```
+
+#Sample
+For a more detailed example check the [demoapp](https://github.com/Telenav/ExpandablePager/tree/master/demoapp) module.
+
+#License
+[Apache License, Version 2.0](https://github.com/Telenav/ExpandablePager/blob/master/LICENSE.md)
