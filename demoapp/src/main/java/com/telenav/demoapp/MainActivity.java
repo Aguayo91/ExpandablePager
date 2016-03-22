@@ -14,16 +14,15 @@ import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.telenav.demoapp.fragment.BookFragmentAdapter;
 import com.telenav.demoapp.fragment.BookFragmentStateAdapter;
 import com.telenav.expandablepager.ExpandablePager;
 import com.telenav.expandablepager.listener.OnSliderStateChangeListener;
 import com.telenav.expandableviewpager.R;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
         setTitle("Books");
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         final List<Book> myList = new ArrayList<>(list);
 

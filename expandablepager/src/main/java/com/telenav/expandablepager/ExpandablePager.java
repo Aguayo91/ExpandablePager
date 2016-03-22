@@ -19,7 +19,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
@@ -82,17 +81,11 @@ public class ExpandablePager extends SlidingContainer {
         mPager.setId(R.id.internal_pager_id);
         mPager.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            boolean change = true;
+            int idx = 0;
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (change) {
-                    if (onSliderStateChangeListener != null) {
-                        int index = mPager.getCurrentItem() + (position < mPager.getCurrentItem() ? -1 : 1);
-                        onSliderStateChangeListener.onPageChanged(getPage(index), index, sliderState);
-                        change = !change;
-                    }
-                }
+                idx = mPager.getCurrentItem() + (position < mPager.getCurrentItem() ? -1 : 1);
             }
 
             @Override
@@ -103,7 +96,14 @@ public class ExpandablePager extends SlidingContainer {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                change = true;
+                notifyChange(idx);
+            }
+
+            private void notifyChange(int index) {
+                if (onSliderStateChangeListener != null) {
+                    if (index < mPager.getAdapter().getCount())
+                        onSliderStateChangeListener.onPageChanged(getPage(index), index, sliderState);
+                }
             }
         });
         addView(mPager);
@@ -148,6 +148,7 @@ public class ExpandablePager extends SlidingContainer {
 
     /**
      * Animates the container to the selected state.
+     *
      * @param state - available value are: STATE_COLLAPSED, STATE_EXPANDED, STATE_HIDDEN
      */
     @Override
@@ -158,6 +159,7 @@ public class ExpandablePager extends SlidingContainer {
 
     /**
      * Set the height of the pager in the collapsed state.
+     *
      * @param collapsed collapsed height in pixels
      */
     public void setCollapsedHeight(int collapsed) {
@@ -202,7 +204,7 @@ public class ExpandablePager extends SlidingContainer {
     /**
      * Set the currently selected page.
      *
-     * @param index Item index to select
+     * @param index        Item index to select
      * @param smoothScroll True to smoothly scroll to the new item, false to transition immediately
      */
     public void setCurrentItem(int index, boolean smoothScroll) {
@@ -237,12 +239,14 @@ public class ExpandablePager extends SlidingContainer {
     }
 
     private View getPage(int position) {
-        if (mPager.getAdapter() instanceof FragmentPagerAdapter)
-            return ((FragmentActivity) getContext()).getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.internal_pager_id + ":" + position).getView();
-        else if (mPager.getAdapter() instanceof FragmentStatePagerAdapter)
-            return ((Fragment) mPager.getAdapter().instantiateItem(mPager, position)).getView();
-        else
-            return findViewById(R.id.internal_page_id % 10000 + position);
+        if (mPager.getAdapter() != null && position >= 0 && position < mPager.getAdapter().getCount()) {
+            if (mPager.getAdapter() instanceof FragmentPagerAdapter ||
+                    mPager.getAdapter() instanceof FragmentStatePagerAdapter)
+                return ((Fragment) mPager.getAdapter().instantiateItem(mPager, position)).getView();
+            else
+                return findViewById(R.id.internal_page_id % 10000 + position);
+        } else
+            return null;
     }
 
     @Override
